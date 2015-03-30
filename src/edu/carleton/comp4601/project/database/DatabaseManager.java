@@ -10,6 +10,8 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 
+import edu.carleton.comp4601.project.dao.Product;
+
 public class DatabaseManager {
 
 	public DB getDatabase() {
@@ -39,26 +41,26 @@ public class DatabaseManager {
 
 	}
 
-	public DBCollection getUserCollection() {
+	public DBCollection getProductCollection() {
 
 		DBCollection col;
 
-		if (db.collectionExists("users")) {
-			col = db.getCollection("users");
+		if (db.collectionExists("products")) {
+			col = db.getCollection("products");
 			return col;
 		} else {
-			DBObject options = BasicDBObjectBuilder.start().add("capped", false).add("size", 1000000000l).get();
-			col = db.createCollection("users", options);
+			DBObject options = BasicDBObjectBuilder.start().add("capped", false).add("size", 2000000000l).get();
+			col = db.createCollection("products", options);
 			return col;
 		}
 	}
 
-	/*
-	public boolean addNewUser(User user) {
+	
+	public boolean addNewProduct(Product product) {
 
 		try {
-			DBCollection col = getUserCollection();
-			col.insert(buildDBObject(user));
+			DBCollection col = getProductCollection();
+			col.insert(buildDBObject(product));
 			
 		} catch (MongoException e) {
 			System.out.println("MongoException: " + e.getLocalizedMessage());
@@ -68,11 +70,11 @@ public class DatabaseManager {
 		return true; 	
 	}
 
-	public boolean updateUser(User newUser, User oldUser) {
+	public boolean updateProduct(Product newProduct, Product oldProduct) {
 
 		try {
-			DBCollection col = getUserCollection();
-			col.update(buildDBObject(oldUser), buildDBObject(newUser));
+			DBCollection col = getProductCollection();
+			col.update(buildDBObject(oldProduct), buildDBObject(newProduct));
 
 		} catch (MongoException e) {
 			System.out.println("MongoException: " + e.getLocalizedMessage());
@@ -82,83 +84,25 @@ public class DatabaseManager {
 		return true; 
 	}
 
-	public User removeUser(String id) {	
+	public Product removeUser(String id) {	
 
 		try {
 			BasicDBObject query = new BasicDBObject("id", id);
-			DBCollection col = getUserCollection();
+			DBCollection col = getProductCollection();
 			DBObject result = col.findAndRemove(query);
-			return new User(result.toMap());
+			return new Product(result.toMap());
 			
 		} catch (MongoException e) {
 			System.out.println("MongoException: " + e.getLocalizedMessage());
 			return null;
 		}
 	}
-
-	public User findUser(String id) {
-
-		try {
-
-			BasicDBObject query = new BasicDBObject("id", id);
-			DBCollection col = getUserCollection();
-			DBObject result = col.findOne(query);
-
-			if(result != null) {
-				return new User(result.toMap());
-			}
-
-			return null;
-		} catch (MongoException e) {
-			System.out.println("MongoException: " + e.getLocalizedMessage());
-			return null;
-		}
-
-	}
 	
-	public User findUserByPasswordEmail(String email, String password) {
-		try {
-
-			BasicDBObject query = new BasicDBObject("email", email);
-			query.append("password", password);
-			DBCollection col = getUserCollection();
-			DBObject result = col.findOne(query);
-
-			if(result != null) {
-				return new User(result.toMap());
-			}
-
-			return null;
-		} catch (MongoException e) {
-			System.out.println("MongoException: " + e.getLocalizedMessage());
-			return null;
-		}
-	}
-	
-	public User findUserByToken(String authToken) {
-
-		try {
-
-			BasicDBObject query = new BasicDBObject("authtoken", authToken);
-			DBCollection col = getUserCollection();
-			DBObject result = col.findOne(query);
-
-			if(result != null) {
-				return new User(result.toMap());
-			}
-
-			return null;
-		} catch (MongoException e) {
-			System.out.println("MongoException: " + e.getLocalizedMessage());
-			return null;
-		}
-
-	}
-	
-	public BasicDBObject buildDBObject(User user) {
+	//TODO: Object Mapping for DB adding 
+	public BasicDBObject buildDBObject(Product product) {
 		
 		BasicDBObject newObj = new BasicDBObject();
-		newObj.put("authtoken", user.getAuthToken());
+		/*newObj.put("authtoken", user.getAuthToken());
 		newObj.put("id", user.getId());
 		newObj.put("firstname", user.getFirstname());
 		newObj.put("lastname", user.getLastname());
@@ -167,13 +111,13 @@ public class DatabaseManager {
 		newObj.put("gender", user.getGender());
 		newObj.put("birthday", user.getBirthday());
 		newObj.put("lastlogintime", user.getLastLoginTime());
-		newObj.put("productids", user.getProductIds());
+		newObj.put("productids", user.getProductIds());*/
 		return newObj;
 		
-	}*/
+	}
 
-	public int getUserCollectionSize() {
-		DBCollection col = this.getUserCollection();
+	public int getProductCollectionSize() {
+		DBCollection col = this.getProductCollection();
 		return (int) col.getCount();
 	}
 
