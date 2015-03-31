@@ -2,6 +2,8 @@ package edu.carleton.comp4601.project.database;
 
 import java.net.UnknownHostException;
 
+import org.mongodb.morphia.Morphia;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
@@ -28,13 +30,18 @@ public class DatabaseManager {
 
 	private DB db;
 	private MongoClient mongoClient;
+	private Morphia morphia;
 	private static DatabaseManager instance;
 
 	public DatabaseManager() {
 
 		try {
+			this.morphia = new Morphia();
+			this.morphia.map(Product.class);
+			
 			this.mongoClient = new MongoClient( "localhost" );
 			setDatabase(this.mongoClient.getDB( "computergenie" ));
+			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +67,7 @@ public class DatabaseManager {
 
 		try {
 			DBCollection col = getProductCollection();
-			col.insert(buildDBObject(product));
+			col.insert(this.morphia.toDBObject(product));
 			
 		} catch (MongoException e) {
 			System.out.println("MongoException: " + e.getLocalizedMessage());
@@ -74,7 +81,7 @@ public class DatabaseManager {
 
 		try {
 			DBCollection col = getProductCollection();
-			col.update(buildDBObject(oldProduct), buildDBObject(newProduct));
+			col.update(this.morphia.toDBObject(oldProduct), this.morphia.toDBObject(newProduct));
 
 		} catch (MongoException e) {
 			System.out.println("MongoException: " + e.getLocalizedMessage());
@@ -84,13 +91,13 @@ public class DatabaseManager {
 		return true; 
 	}
 
-	public Product removeUser(String id) {	
+	public Product removeProduct(String id) {	
 
 		try {
 			BasicDBObject query = new BasicDBObject("id", id);
 			DBCollection col = getProductCollection();
 			DBObject result = col.findAndRemove(query);
-			return new Product(result.toMap());
+			return morphia.fromDBObject(Product.class, result);
 			
 		} catch (MongoException e) {
 			System.out.println("MongoException: " + e.getLocalizedMessage());
@@ -98,24 +105,6 @@ public class DatabaseManager {
 		}
 	}
 	
-	//TODO: Object Mapping for DB adding 
-	public BasicDBObject buildDBObject(Product product) {
-		
-		BasicDBObject newObj = new BasicDBObject();
-		/*newObj.put("authtoken", user.getAuthToken());
-		newObj.put("id", user.getId());
-		newObj.put("firstname", user.getFirstname());
-		newObj.put("lastname", user.getLastname());
-		newObj.put("email", user.getEmail());
-		newObj.put("passwordhash", user.getPasswordHash());
-		newObj.put("gender", user.getGender());
-		newObj.put("birthday", user.getBirthday());
-		newObj.put("lastlogintime", user.getLastLoginTime());
-		newObj.put("productids", user.getProductIds());*/
-		return newObj;
-		
-	}
-
 	public int getProductCollectionSize() {
 		DBCollection col = this.getProductCollection();
 		return (int) col.getCount();

@@ -1,13 +1,18 @@
 package edu.carleton.comp4601.project.dao;
 
+import org.mongodb.morphia.annotations.Embedded;
+
+@Embedded
 public class Screen {
 
 	private String screenSize;
 	private String screenRes;
-	private boolean isTouchScreen;
+	private String isTouchScreen;
 	
 	public Screen() {
-		
+		this.screenSize = "";
+		this.screenRes = "";
+		this.isTouchScreen = "";
 	}
 	
 	public String getScreenSize() {
@@ -22,10 +27,10 @@ public class Screen {
 	public void setScreenRes(String screenRes) {
 		this.screenRes = screenRes;
 	}
-	public boolean isTouchScreen() {
+	public String isTouchScreen() {
 		return isTouchScreen;
 	}
-	public void setTouchScreen(boolean isTouchScreen) {
+	public void setTouchScreen(String isTouchScreen) {
 		this.isTouchScreen = isTouchScreen;
 	}
 	

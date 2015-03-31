@@ -1,30 +1,44 @@
 package edu.carleton.comp4601.project.dao;
 
+import org.mongodb.morphia.annotations.Embedded;
+
+@Embedded
 public class InputOutput {
 
-	private boolean hasWebCam;
+	private String hasWebCam;
 	private String keyboard;
 	private String mouse;
 	private String remote;
 	
-	private String usb;
 	private String firewire;
-	private String cardreader;
-	private boolean hasVGA;
-	private boolean hasDVI;
-	private boolean hasHDMI;
+	private String usbPorts;
+	private String hasVGA;
+	private String hasDVI;
+	private String hasHDMI;
+	
+	private String speakers;
 	
 	private String other;
 	
 	public InputOutput() {
-		
+		this.hasDVI = "";
+		this.hasHDMI = "";
+		this.hasVGA = "";
+		this.speakers = "";
+		this.mouse = "";
+		this.keyboard = "";
+		this.firewire = "";
+		this.remote = "";
+		this.usbPorts = "";
+		this.hasWebCam = "";
+		this.other = "";
 	}
 	
-	public boolean isHasWebCam() {
+	public String isHasWebCam() {
 		return hasWebCam;
 	}
 
-	public void setHasWebCam(boolean hasWebCam) {
+	public void setHasWebCam(String hasWebCam) {
 		this.hasWebCam = hasWebCam;
 	}
 
@@ -52,14 +66,6 @@ public class InputOutput {
 		this.remote = remote;
 	}
 
-	public String getUsb() {
-		return usb;
-	}
-
-	public void setUsb(String usb) {
-		this.usb = usb;
-	}
-
 	public String getFirewire() {
 		return firewire;
 	}
@@ -68,35 +74,35 @@ public class InputOutput {
 		this.firewire = firewire;
 	}
 
-	public String getCardreader() {
-		return cardreader;
+	public String getUSBPorts() {
+		return usbPorts;
 	}
 
-	public void setCardreader(String cardreader) {
-		this.cardreader = cardreader;
+	public void setUSBPorts(String usbPorts) {
+		this.usbPorts = usbPorts;
 	}
 
-	public boolean isHasVGA() {
+	public String isHasVGA() {
 		return hasVGA;
 	}
 
-	public void setHasVGA(boolean hasVGA) {
+	public void setHasVGA(String hasVGA) {
 		this.hasVGA = hasVGA;
 	}
 
-	public boolean isHasDVI() {
+	public String isHasDVI() {
 		return hasDVI;
 	}
 
-	public void setHasDVI(boolean hasDVI) {
+	public void setHasDVI(String hasDVI) {
 		this.hasDVI = hasDVI;
 	}
 
-	public boolean isHasHDMI() {
+	public String isHasHDMI() {
 		return hasHDMI;
 	}
 
-	public void setHasHDMI(boolean hasHDMI) {
+	public void setHasHDMI(String hasHDMI) {
 		this.hasHDMI = hasHDMI;
 	}
 
@@ -106,6 +112,14 @@ public class InputOutput {
 
 	public void setOther(String other) {
 		this.other = other;
+	}
+
+	public String getSpeakers() {
+		return speakers;
+	}
+
+	public void setSpeakers(String speakers) {
+		this.speakers = speakers;
 	}
 
 }

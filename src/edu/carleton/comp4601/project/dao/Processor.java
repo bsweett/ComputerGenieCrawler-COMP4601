@@ -3,8 +3,8 @@ package edu.carleton.comp4601.project.dao;
 public class Processor {
 
 	private String processorType;
-	private Integer numberOfCores;
-	private Double Speed;
+	private String numberOfCores;
+	private String Speed;
 	private String brand;
 	
 	public Processor() {
@@ -19,19 +19,19 @@ public class Processor {
 		this.processorType = processorType;
 	}
 
-	public Integer getNumberOfCores() {
+	public String getNumberOfCores() {
 		return numberOfCores;
 	}
 
-	public void setNumberOfCores(Integer numberOfCores) {
+	public void setNumberOfCores(String numberOfCores) {
 		this.numberOfCores = numberOfCores;
 	}
 
-	public Double getSpeed() {
+	public String getSpeed() {
 		return Speed;
 	}
 
-	public void setSpeed(Double speed) {
+	public void setSpeed(String speed) {
 		Speed = speed;
 	}
 

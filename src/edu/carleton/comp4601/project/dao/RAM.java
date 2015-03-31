@@ -2,17 +2,17 @@ package edu.carleton.comp4601.project.dao;
 
 public class RAM {
 
-	private Integer memorySize; 
+	private String memorySize; 
 	private String type;
 
 	public RAM() {
 		
 	}
 	
-	public Integer getMemorySize() {
+	public String getMemorySize() {
 		return memorySize;
 	}
-	public void setMemorySize(Integer memorySize) {
+	public void setMemorySize(String memorySize) {
 		this.memorySize = memorySize;
 	}
 	public String getType() {

@@ -1,48 +1,58 @@
 package edu.carleton.comp4601.project.dao;
 
+import org.mongodb.morphia.annotations.Embedded;
+
+@Embedded
 public class Dimensions {
 
-	private Double width;
-	private Double height;
-	private Double depth;
-	private Double weight;
+	private String width;
+	private String height;
+	private String depth;
+	private String weight;
 	
-	public Dimensions(Double width, Double height, Double depth, Double weight) {
+	public Dimensions() {
+		this.width = "";
+		this.height = "";
+		this.depth = "";
+		this.weight = "";
+	}
+	
+	public Dimensions(String width, String height, String depth, String weight) {
 		this.width = width;
 		this.height = height;
 		this.depth = depth;
 		this.weight = weight;
 	}
 	
-	public Double getWidth() {
+	public String getWidth() {
 		return width;
 	}
 
-	public void setWidth(Double width) {
+	public void setWidth(String width) {
 		this.width = width;
 	}
 
-	public Double getHeight() {
+	public String getHeight() {
 		return height;
 	}
 
-	public void setHeight(Double height) {
+	public void setHeight(String height) {
 		this.height = height;
 	}
 
-	public Double getDepth() {
+	public String getDepth() {
 		return depth;
 	}
 
-	public void setDepth(Double depth) {
+	public void setDepth(String depth) {
 		this.depth = depth;
 	}
 
-	public Double getWeight() {
+	public String getWeight() {
 		return weight;
 	}
 
-	public void setWeight(Double weight) {
+	public void setWeight(String weight) {
 		this.weight = weight;
 	}
 }

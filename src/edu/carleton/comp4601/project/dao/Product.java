@@ -2,49 +2,74 @@ package edu.carleton.comp4601.project.dao;
 
 import java.util.Map;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+
+@Entity("products")
 public class Product {
 	
+	//Identifiers 
+	@Id ObjectId id;
+	private RetailerName retailer;
+	
 	// Info
-	private String id;
 	private String title;
+	private String imageSrc;
 	private String model;
-	private long releaseDate;
+	private long fetchedDate;
 	private ProductType type;
-	private Brand brand;
+	
+	@Embedded
 	private Dimensions dimensions;
-	private String color;
-	private Integer batteryLife;
+	
+	private String batteryLife;
 	
 	// Screen
+	@Embedded
 	private Screen screen;
 	
 	// Processor
+	@Embedded
 	private Processor processor;
 	
 	// RAM
+	@Embedded
 	private RAM ram;
 	
 	//Hard drive
+	@Embedded
 	private Harddrive harddrive;
 	
 	//Audio
 	private String audioDescription;
 	
 	//IO
+	@Embedded
 	private InputOutput io;
 	
 	//Networking
 	private String bluetooth;
 	private String wifi;
 	
+	//Graphics
+	@Embedded
+	private GraphicsCard graphics;
+	
+	//Price
+	private String price;
+	
+	//Operating System
+	private String os;
+	
 	public Product() {
-		
+		this.imageSrc = "";
 	}
 	
-	public Product(String title, ProductType type, Brand brand, Screen screen, Processor processor, RAM ram, Harddrive drive, InputOutput io, Dimensions dim) {
+	public Product(String title, ProductType type, Screen screen, Processor processor, RAM ram, Harddrive drive, InputOutput io, Dimensions dim) {
 		setTitle(title);
 		setType(type);
-		setBrand(brand);
 		setScreen(screen);
 		setProcessor(processor);
 		setRam(ram);
@@ -55,23 +80,18 @@ public class Product {
 	
 	public Product(Map<?, ?> map) {
 		this();
-		this.setId((String) map.get("id"));
+		//this.setId((String) map.get("id"));
 		this.setTitle((String) map.get("title"));
 		this.setModel((String) map.get("model"));
-		this.setReleaseDate((long) map.get("releasedate"));
+		this.setFetchDate((long) map.get("releasedate"));
 		this.setType((ProductType) map.get("type"));
-		this.setBrand((Brand) map.get("brand"));
 		this.setDimensions((Dimensions) map.get("dimensions"));
 		
 		//TODO: Object mapping 
 	}
 	
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	public ObjectId getId() {
+		return this.id;
 	}
 
 	public String getTitle() {
@@ -82,6 +102,14 @@ public class Product {
 		this.title = title;
 	}
 
+	public String getImageSrc() {
+		return imageSrc;
+	}
+
+	public void setImageSrc(String imageSrc) {
+		this.imageSrc = imageSrc;
+	}
+
 	public String getModel() {
 		return model;
 	}
@@ -90,12 +118,12 @@ public class Product {
 		this.model = model;
 	}
 
-	public long getReleaseDate() {
-		return releaseDate;
+	public long getFetchDate() {
+		return fetchedDate;
 	}
 
-	public void setReleaseDate(long releaseDate) {
-		this.releaseDate = releaseDate;
+	public void setFetchDate(long fetchDate) {
+		this.fetchedDate = fetchDate;
 	}
 
 	public ProductType getType() {
@@ -106,14 +134,6 @@ public class Product {
 		this.type = type;
 	}
 
-	public Brand getBrand() {
-		return brand;
-	}
-
-	public void setBrand(Brand brand) {
-		this.brand = brand;
-	}
-
 	public Dimensions getDimensions() {
 		return dimensions;
 	}
@@ -122,19 +142,11 @@ public class Product {
 		this.dimensions = dimensions;
 	}
 
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-	public Integer getBatteryLife() {
+	public String getBatteryLife() {
 		return batteryLife;
 	}
 
-	public void setBatteryLife(Integer batteryLife) {
+	public void setBatteryLife(String batteryLife) {
 		this.batteryLife = batteryLife;
 	}
 
@@ -201,5 +213,42 @@ public class Product {
 	public void setIo(InputOutput io) {
 		this.io = io;
 	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	
+	public String getOs() {
+		return os;
+	}
+
+	public void setOs(String os) {
+		this.os = os;
+	}
+
+	public GraphicsCard getGraphics() {
+		return graphics;
+	}
+
+	public void setGraphics(GraphicsCard graphics) {
+		this.graphics = graphics;
+	}
+
+	public RetailerName getRetailer() {
+		return retailer;
+	}
+
+	public void setRetailer(RetailerName retailer) {
+		this.retailer = retailer;
+	}
+
+	@Override
+	public String toString() {
+		return this.title + " " + this.price + " " + this.model;
+	} 
 }
 
