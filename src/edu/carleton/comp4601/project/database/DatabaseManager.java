@@ -90,6 +90,26 @@ public class DatabaseManager {
 
 		return true; 
 	}
+	
+	public Product findAndUpdateProductByTitle(Product product) {
+		try {
+			BasicDBObject query = new BasicDBObject("title", product.getTitle());
+			DBCollection col = getProductCollection();
+			DBObject newProduct = this.morphia.toDBObject(product);
+			DBObject result = col.findAndModify(query, newProduct);
+			
+			if(result != null) {
+				return morphia.fromDBObject(Product.class, result);
+			} else {
+				this.addNewProduct(product);
+			}
+			return product;
+			
+		} catch (MongoException e) {
+			System.out.println("MongoException: " + e.getLocalizedMessage());
+			return null;
+		}
+	}
 
 	public Product removeProduct(String id) {	
 

@@ -18,6 +18,7 @@ public class Product {
 	private String title;
 	private String imageSrc;
 	private String model;
+	private String url;
 	private long fetchedDate;
 	private ProductType type;
 	
@@ -116,6 +117,14 @@ public class Product {
 
 	public void setModel(String model) {
 		this.model = model;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public long getFetchDate() {

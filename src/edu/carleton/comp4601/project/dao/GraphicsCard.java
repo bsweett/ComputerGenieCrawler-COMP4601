@@ -8,11 +8,13 @@ public class GraphicsCard {
 	private String manufacturer;
 	private String model;
 	private String memoryType;
+	private String memoryCap;
 	
 	public GraphicsCard() {
 		this.manufacturer = "";
 		this.model = "";
 		this.memoryType = "";
+		this.setMemoryCap("");
 	}
 
 	public String getManufacturer() {
@@ -37,5 +39,13 @@ public class GraphicsCard {
 
 	public void setMemoryType(String memoryType) {
 		this.memoryType = memoryType;
+	}
+
+	public String getMemoryCap() {
+		return memoryCap;
+	}
+
+	public void setMemoryCap(String memoryCap) {
+		this.memoryCap = memoryCap;
 	}
 }

@@ -49,28 +49,67 @@ public class ProductParser {
 		this.retailer = retailer;
 	}
 
-	public Product parseProductOfType(ProductType type) {
+	public Product parseProductOfType(ProductType type, String url) {
 
 		Product product = null;
 
 		if(retailer.getName() == RetailerName.NCIX) {
-			product = parseNCIXProduct(type);
+			product = parseNCIXProduct(type, url);
 		}
 
 		return product;
 	}
 
 	// NCIX
+	private Product parseNCIXProduct(ProductType type, String url) {
 
-	//TODO: Two functions 1 for main specifications and another for the backup
-	private Product parseNCIXProduct(ProductType type) {
-
+		Product result = new Product();
+		
 		Element img = doc.select("img[id=productpicture]").first();
 		Elements specs = doc.select("div[id=pdiv_3]").first().select("table.normal").first().select("tbody").first().select("tr");
+		Elements featureTable = doc.select("blockquote[class=normal]").first().select("table").first().select("tbody").first().select("tr");
 		//Elements priceColumns = doc.select("div[id=div_price]").first().select("table").select("tbody").first().select("tr").first().select("td");
-		Element price = doc.select("div[id=div_price]").select("span[itemprop=price]").first();
+		
+		Element priceDiv = doc.select("div[id=div_price]").first();
+		Element price1 = priceDiv.select("span[itemprop=price]").first();
+		Element price2 = priceDiv.select("font[color=#CC0000]").first().select("b").first();
 
 		Product product = new Product();
+		product.setTitle(doc.title());
+		product.setImageSrc(img.attr("src"));
+		product.setType(type);
+		product.setRetailer(RetailerName.NCIX);
+		product.setFetchDate(new Date().getTime());
+		product.setUrl(url);
+
+		//<span itemprop="price">$1,449.99</span></b>
+
+		String price = "";
+		if(price1 != null && price1.hasText()) {
+			price = price1.text();
+			product.setPrice(price.replace("$", "".replace(",", "")));
+		} else if(price2 != null && price2.hasText()) {
+			price = price2.text();
+			product.setPrice(price.replace("$", "".replace(",", "")));
+		} else {
+			logger.warn("Could not fetch price for a product: " + url);
+		}
+
+		if(specs != null && !specs.isEmpty() && specs.get(0).children().size() >= 2) {
+			result = buildDetailedProduct(product, specs);
+			logger.info(result.toString());
+		} else if(featureTable != null && !featureTable.isEmpty()) {
+			result = buildBasicProduct(product, featureTable);
+			logger.info(result.toString());
+		} else {
+			logger.warn("Could no parse any detail on product: " + url);
+		}
+		
+		return result;
+	}
+	
+	private Product buildDetailedProduct(Product product, Elements specs) {
+		
 		Dimensions dimensions = new Dimensions();
 		Processor processor = new Processor();
 		RAM ram = new RAM();
@@ -78,170 +117,151 @@ public class ProductParser {
 		InputOutput io = new InputOutput();
 		GraphicsCard graphics = new GraphicsCard();
 		Harddrive harddrive = new Harddrive();
-
-		product.setTitle(doc.title());
-		product.setImageSrc(img.attr("src"));
-		product.setType(type);
-		product.setRetailer(RetailerName.NCIX);
-		product.setFetchDate(new Date().getTime());
-
-		//<span itemprop="price">$1,449.99</span></b>
-
-		if(price != null) {
-			product.setPrice(price.text());
-		} else {
-			logger.warn("Could not fetch price for a product");
-		}
-
+		
 		String batteryString = "";
 		String audioInOutString = "";
+		
+		for(Element spec : specs) {
+			List<Element> childern = spec.children();
+			if(childern.size() >= 2) {
+				String title = childern.get(0).text();
+				String value = childern.get(1).text();
 
-		if(specs != null && !specs.isEmpty() && specs.get(0).children().size() >= 2) {
-			for(Element spec : specs) {
-				List<Element> childern = spec.children();
-				if(childern.size() >= 2) {
-					String title = childern.get(0).text();
-					String value = childern.get(1).text();
-
-					//General
-					if(title.contains("Product Model")) {
-						product.setModel(value);
-					} else if(title.contains("Operating System")) {
-						product.setOs(value);
-					} else if(title.contains("Battery Capacity") || title.contains("Battery Chemistry") || title.contains("Number of Cells") ) {
-						batteryString += " " + value;
-					} else if(title.contains("Wireless LAN Standard")) {
-						product.setWifi(value);
-					} else if(title.contains("Bluetooth Standard")) {
-						product.setBluetooth(value);
-					} else if(title.contains("Audio Line In") || title.contains("Audio Line Out")) {
-						audioInOutString += " " + value;
-						//Dimensions
-					} else if(title.contains("Depth")) {
-						dimensions.setDepth(value);
-					} else if(title.contains("Width")) {
-						dimensions.setWidth(value);
-					} else if(title.contains("Height")) {
-						dimensions.setHeight(value);
-					} else if(title.contains("Weight")) {
-						dimensions.setWeight(value);
-						//Processor
-					} else if(title.contains("Processor Core")) {
-						processor.setNumberOfCores(value);
-					} else if(title.contains("Processor Speed")) {
-						processor.setSpeed(value);
-					} else if(title.contains("Processor Type")) {
-						processor.setProcessorType(value);
-					} else if(title.contains("Processor Manufacturer")) {
-						processor.setBrand(value);
-						//RAM
-					} else if(title.contains("Memory Technology")) {
-						ram.setType(value);
-					} else if(title.contains("Standard Memory")) {
-						ram.setMemorySize(value);
-						//Screen
-					} else if(title.contains("Screen Resolution")) {
-						screen.setScreenRes(value);
-					} else if(title.contains("Screen Size")) {
-						screen.setScreenSize(value);
-					} else if(title.contains("Touchscreen")) {
-						screen.setTouchScreen(value);
-						//IO
-					} else if(title.contains("Pointing Device Type")) {
-						io.setMouse(value);
-					} else if(title.contains("Keyboard Type")) {
-						io.setKeyboard(value);
-					} else if(title.contains("DVI")) {
-						io.setHasDVI(value);
-					} else if(title.contains("HDMI")) {
-						io.setHasHDMI(value);
-					} else if(title.contains("VGA")) {
-						io.setHasVGA(value);
-					} else if(title.contains("Display Port")) {
-						io.setFirewire(value);
-					} else if(title.contains("Webcam")) {
-						io.setHasWebCam(value);
-					} else if(title.contains("Total Number of USB Ports")) {
-						io.setUSBPorts(value);
-					} else if(title.contains("Speakers")) {
-						io.setSpeakers(value);
-						//Graphics
-					} else if(title.contains("Graphics Controller Manufacturer")) {
-						graphics.setManufacturer(value);
-					} else if(title.contains("Graphics Memory Technology")) {
-						graphics.setMemoryType(value);
-					} else if(title.contains("Graphics Controller Model")) {
-						graphics.setModel(value);
-						//Harddrive
-					} else if(title.contains("Hard Drive Capacity") || title.contains("Hybrid Hard Drive Capacity") || title.contains("Total Hard Drive Capacity")) {
-						harddrive.setCapacity(value);
-					} else if(title.contains("Hard Drive RPM")) {
-						harddrive.setSpeed(value);
-					} else if(title.contains("Hard Drive Interface")) {
-						harddrive.setType(value);
-					} else if(title.contains("Optical Drive Type")) {
-						harddrive.setDriveType(value);
-					}
-						
-					//TODO: Other formats?
-					//http://www.ncix.com/detail/msi-gt60-dominator-i7-4710mq-92-102704-1202.htm
-				}	
-			}
-
-			product.setBatteryLife(batteryString);
-			product.setAudioDescription(audioInOutString);
-			product.setScreen(screen);
-			product.setIo(io);
-			product.setGraphics(graphics);
-			product.setRam(ram);
-			product.setHarddrive(harddrive);
-			product.setProcessor(processor);
-			product.setDimensions(dimensions);
-			
-		} else {
-			
-			Elements featureTable = doc.select("blockquote[class=normal]").first().select("table").first().select("tbody").first().select("tr");
-			
-			if(featureTable != null && !featureTable.isEmpty()) {
-				for(Element tr : featureTable) {
-					Elements tds = tr.children();
-					if(tds.size() >= 2) {
-						String title = tds.get(0).text();
-						//String value = tds.get(1).text();
-						
-						if(title.contains("CPU")) {
-							
-						} else if(title.contains("RAM")) {
-							
-						} else if(title.contains("GPU")) {
-							
-						} else if(title.contains("HDD")) {
-							
-						} else if(title.contains("OS")) {
-							
-						} else if(title.contains("ODD")) {
-							
-						} else if(title.contains("keyboard&mouse")) {
-							
-						} else if(title.contains("")) {
-							
-						} 
-					}
+				//General
+				if(title.contains("Product Model")) {
+					product.setModel(value);
+				} else if(title.contains("Operating System") || title.contains("OS")) {
+					product.setOs(value);
+				} else if(title.contains("Battery Capacity") || title.contains("Battery Chemistry") || title.contains("Number of Cells") || title.contains("Battery")) {
+					batteryString += " " + value;
+				} else if(title.contains("Wireless LAN Standard") || title.contains("Wireless LAN")) {
+					product.setWifi(value);
+				} else if(title.contains("Bluetooth")) {
+					product.setBluetooth(value);
+				} else if(title.contains("Audio Line In") || title.contains("Audio Line Out") || title.contains("Audio")) {
+					audioInOutString += " " + value;
+					//Dimensions
+				} else if(title.contains("Depth")) {
+					dimensions.setDepth(value);
+				} else if(title.contains("Width")) {
+					dimensions.setWidth(value);
+				} else if(title.contains("Height")) {
+					dimensions.setHeight(value);
+				} else if(title.contains("Weight")) {
+					dimensions.setWeight(value);
+					//Processor
+				} else if(title.contains("Processor Core")) {
+					processor.setNumberOfCores(value);
+				} else if(title.contains("Processor Speed")) {
+					processor.setSpeed(value);
+				} else if(title.contains("Processor Type")) {
+					processor.setProcessorType(value);
+				} else if(title.contains("Processor Manufacturer") || title.contains("CPU")) {
+					processor.setBrand(value);
+					//RAM
+				} else if(title.contains("Memory Technology")) {
+					ram.setType(value);
+				} else if(title.contains("Standard Memory") || title.contains("Memory")) {
+					ram.setMemorySize(value);
+					//Screen
+				} else if(title.contains("Screen Resolution")) {
+					screen.setScreenRes(value);
+				} else if(title.contains("Screen Size") || title.contains("LCD Size")) {
+					screen.setScreenSize(value);
+				} else if(title.contains("Touchscreen")) {
+					screen.setTouchScreen(value);
+					//IO
+				} else if(title.contains("Pointing Device Type")) {
+					io.setMouse(value);
+				} else if(title.contains("Keyboard Type") || title.contains("Keyboard")) {
+					io.setKeyboard(value);
+				} else if(title.contains("DVI")) {
+					io.setHasDVI(value);
+				} else if(title.contains("HDMI")) {
+					io.setHasHDMI(value);
+				} else if(title.contains("VGA")) {
+					io.setHasVGA(value);
+				} else if(title.contains("Display Port") || title.contains("Mini-DisplayPort")) {
+					io.setFirewire(value);
+				} else if(title.contains("Webcam")) {
+					io.setHasWebCam(value);
+				} else if(title.contains("Total Number of USB Ports") || title.contains("USB 3.0 port")) {
+					io.setUSBPorts(value);
+				} else if(title.contains("Speakers")) {
+					io.setSpeakers(value);
+					//Graphics
+				} else if(title.contains("Graphics Controller Manufacturer")) {
+					graphics.setManufacturer(value);
+				} else if(title.contains("Graphics Memory Technology")) {
+					graphics.setMemoryType(value);
+				} else if(title.contains("Graphics Controller Model") || title.equals("Graphics")) {
+					graphics.setModel(value);
+				} else if(title.contains("Graphics Memory Capacity") || title.contains("Graphics VRAM")) {
+					graphics.setMemoryCap(value);
+					//Harddrive
+				} else if(title.contains("Hard Drive Capacity") || title.contains("Hybrid Hard Drive Capacity") || 
+						title.contains("Total Hard Drive Capacity") || title.contains("HDD") || title.contains("Solid State Drive Capacity")) {
+					harddrive.setCapacity(value);
+				} else if(title.contains("Hard Drive RPM")) {
+					harddrive.setSpeed(value);
+				} else if(title.contains("Hard Drive Interface") || title.contains("Solid State Drive Capacity")) {
+					harddrive.setType(value);
+				} else if(title.contains("Optical Drive")) {
+					harddrive.setDriveType(value);
 				}
-			} else {
-				// Last resort document couldn't be parsed correctly
-			}
+					
+				//TODO: Other formats?
+				//http://www.ncix.com/detail/msi-gt60-dominator-i7-4710mq-92-102704-1202.htm
+			}	
 		}
 
-		logger.info(product.toString());
-
+		product.setBatteryLife(batteryString);
+		product.setAudioDescription(audioInOutString);
+		product.setScreen(screen);
+		product.setIo(io);
+		product.setGraphics(graphics);
+		product.setRam(ram);
+		product.setHarddrive(harddrive);
+		product.setProcessor(processor);
+		product.setDimensions(dimensions);
+		
 		return product;
-		/*
-		product.setModel(modelSpan.text());
-		product.setPrice(priceSpan.text());*/
-
 	}
 
-
+	private Product buildBasicProduct(Product product, Elements featureTable) {
+		
+		Processor processor = new Processor();
+		RAM ram = new RAM();
+		InputOutput io = new InputOutput();
+		GraphicsCard graphics = new GraphicsCard();
+		Harddrive harddrive = new Harddrive();
+		
+		for(Element tr : featureTable) {
+			Elements tds = tr.children();
+			if(tds.size() >= 2) {
+				String title = tds.get(0).text();
+				String value = tds.get(1).text();
+				
+				if(title.contains("CPU")) {
+					processor.setBrand(value);
+				} else if(title.contains("RAM")) {
+					ram.setMemorySize(value);
+				} else if(title.contains("GPU")) {
+					graphics.setModel(value);
+				} else if(title.contains("HDD")) {
+					harddrive.setCapacity(value);
+				} else if(title.contains("OS")) {
+					product.setOs(value);
+				} else if(title.contains("ODD")) {
+					harddrive.setDriveType(value);
+				} else if(title.contains("keyboard&mouse") || title.contains("Keyborad & Mouse")) {
+					io.setMouse(value);
+					io.setKeyboard(value);
+				}
+			}
+		}
+		
+		return product;
+	}
 }
 

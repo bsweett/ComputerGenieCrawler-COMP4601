@@ -59,7 +59,7 @@ public class CGWebCrawler extends WebCrawler {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String html = htmlParseData.getHtml();
 
-			logger.info("Visited url: " + url);
+			//logger.info("Visited url: " + url);
 			
 			Document doc = Jsoup.parse(html);
 			if(doc != null) {
@@ -79,7 +79,7 @@ public class CGWebCrawler extends WebCrawler {
 			
 			if(type != null) {
 				ProductParser productParser = new ProductParser(retailer, doc);
-				product = productParser.parseProductOfType(type);
+				product = productParser.parseProductOfType(type, url);
 			}
 		}
 		
@@ -141,7 +141,7 @@ public class CGWebCrawler extends WebCrawler {
 	
 	private void addProductToDatabase(Product product) {
 		if(product != null) {
-			DatabaseManager.getInstance().addNewProduct(product);
+			DatabaseManager.getInstance().findAndUpdateProductByTitle(product);
 		}
 	}
 
