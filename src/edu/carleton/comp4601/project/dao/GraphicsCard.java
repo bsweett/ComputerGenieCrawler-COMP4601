@@ -18,7 +18,7 @@ public class GraphicsCard {
 	}
 
 	public String getManufacturer() {
-		return manufacturer;
+		return manufacturer.toLowerCase();
 	}
 
 	public void setManufacturer(String manufacturer) {
@@ -26,7 +26,7 @@ public class GraphicsCard {
 	}
 
 	public String getModel() {
-		return model;
+		return model.toLowerCase();
 	}
 
 	public void setModel(String model) {
@@ -34,7 +34,7 @@ public class GraphicsCard {
 	}
 
 	public String getMemoryType() {
-		return memoryType;
+		return memoryType.toLowerCase();
 	}
 
 	public void setMemoryType(String memoryType) {
@@ -42,7 +42,7 @@ public class GraphicsCard {
 	}
 
 	public String getMemoryCap() {
-		return memoryCap;
+		return memoryCap.toLowerCase();
 	}
 
 	public void setMemoryCap(String memoryCap) {

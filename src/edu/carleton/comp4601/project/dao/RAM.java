@@ -11,13 +11,13 @@ public class RAM {
 	}
 	
 	public String getMemorySize() {
-		return memorySize;
+		return memorySize.toLowerCase();
 	}
 	public void setMemorySize(String memorySize) {
 		this.memorySize = memorySize;
 	}
 	public String getType() {
-		return type;
+		return type.toLowerCase();
 	}
 	public void setType(String type) {
 		this.type = type;

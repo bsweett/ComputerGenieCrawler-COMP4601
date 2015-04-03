@@ -16,19 +16,19 @@ public class Screen {
 	}
 	
 	public String getScreenSize() {
-		return screenSize;
+		return screenSize.toLowerCase();
 	}
 	public void setScreenSize(String screenSize) {
 		this.screenSize = screenSize;
 	}
 	public String getScreenRes() {
-		return screenRes;
+		return screenRes.toLowerCase();
 	}
 	public void setScreenRes(String screenRes) {
 		this.screenRes = screenRes;
 	}
 	public String isTouchScreen() {
-		return isTouchScreen;
+		return isTouchScreen.toLowerCase();
 	}
 	public void setTouchScreen(String isTouchScreen) {
 		this.isTouchScreen = isTouchScreen;

@@ -15,7 +15,7 @@ public class Processor {
 	}
 
 	public String getProcessorType() {
-		return processorType;
+		return processorType.toLowerCase();
 	}
 
 	public void setProcessorType(String processorType) {
@@ -23,7 +23,7 @@ public class Processor {
 	}
 
 	public String getNumberOfCores() {
-		return numberOfCores;
+		return numberOfCores.toLowerCase();
 	}
 
 	public void setNumberOfCores(String numberOfCores) {
@@ -31,7 +31,7 @@ public class Processor {
 	}
 
 	public String getSpeed() {
-		return Speed;
+		return Speed.toLowerCase();
 	}
 
 	public void setSpeed(String speed) {
@@ -39,7 +39,7 @@ public class Processor {
 	}
 
 	public String getBrand() {
-		return brand;
+		return brand.toLowerCase();
 	}
 
 	public void setBrand(String brand) {

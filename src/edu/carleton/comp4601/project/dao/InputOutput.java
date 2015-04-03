@@ -35,7 +35,7 @@ public class InputOutput {
 	}
 	
 	public String isHasWebCam() {
-		return hasWebCam;
+		return hasWebCam.toLowerCase();
 	}
 
 	public void setHasWebCam(String hasWebCam) {
@@ -43,7 +43,7 @@ public class InputOutput {
 	}
 
 	public String getKeyboard() {
-		return keyboard;
+		return keyboard.toLowerCase();
 	}
 
 	public void setKeyboard(String keyboard) {
@@ -51,7 +51,7 @@ public class InputOutput {
 	}
 
 	public String getMouse() {
-		return mouse;
+		return mouse.toLowerCase();
 	}
 
 	public void setMouse(String mouse) {
@@ -59,7 +59,7 @@ public class InputOutput {
 	}
 
 	public String getRemote() {
-		return remote;
+		return remote.toLowerCase();
 	}
 
 	public void setRemote(String remote) {
@@ -67,7 +67,7 @@ public class InputOutput {
 	}
 
 	public String getFirewire() {
-		return firewire;
+		return firewire.toLowerCase();
 	}
 
 	public void setFirewire(String firewire) {
@@ -75,7 +75,7 @@ public class InputOutput {
 	}
 
 	public String getUSBPorts() {
-		return usbPorts;
+		return usbPorts.toLowerCase();
 	}
 
 	public void setUSBPorts(String usbPorts) {
@@ -83,7 +83,7 @@ public class InputOutput {
 	}
 
 	public String isHasVGA() {
-		return hasVGA;
+		return hasVGA.toLowerCase();
 	}
 
 	public void setHasVGA(String hasVGA) {
@@ -91,7 +91,7 @@ public class InputOutput {
 	}
 
 	public String isHasDVI() {
-		return hasDVI;
+		return hasDVI.toLowerCase();
 	}
 
 	public void setHasDVI(String hasDVI) {
@@ -99,7 +99,7 @@ public class InputOutput {
 	}
 
 	public String isHasHDMI() {
-		return hasHDMI;
+		return hasHDMI.toLowerCase();
 	}
 
 	public void setHasHDMI(String hasHDMI) {
@@ -107,7 +107,7 @@ public class InputOutput {
 	}
 
 	public String getOther() {
-		return other;
+		return other.toLowerCase();
 	}
 
 	public void setOther(String other) {
@@ -115,7 +115,7 @@ public class InputOutput {
 	}
 
 	public String getSpeakers() {
-		return speakers;
+		return speakers.toLowerCase();
 	}
 
 	public void setSpeakers(String speakers) {

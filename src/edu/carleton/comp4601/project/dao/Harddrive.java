@@ -18,7 +18,7 @@ public class Harddrive {
 	}
 	
 	public String getCapacity() {
-		return capacity;
+		return capacity.toLowerCase();
 	}
 
 	public void setCapacity(String capacity) {
@@ -26,7 +26,7 @@ public class Harddrive {
 	}
 
 	public String getSpeed() {
-		return speed;
+		return speed.toLowerCase();
 	}
 
 	public void setSpeed(String speed) {
@@ -34,7 +34,7 @@ public class Harddrive {
 	}
 
 	public String getType() {
-		return type;
+		return type.toLowerCase();
 	}
 
 	public void setType(String type) {
@@ -42,7 +42,7 @@ public class Harddrive {
 	}
 
 	public String getDriveType() {
-		return driveType;
+		return driveType.toLowerCase();
 	}
 
 	public void setDriveType(String driveType) {

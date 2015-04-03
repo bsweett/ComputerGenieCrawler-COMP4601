@@ -25,7 +25,7 @@ public class Dimensions {
 	}
 	
 	public String getWidth() {
-		return width;
+		return width.toLowerCase();
 	}
 
 	public void setWidth(String width) {
@@ -33,7 +33,7 @@ public class Dimensions {
 	}
 
 	public String getHeight() {
-		return height;
+		return height.toLowerCase();
 	}
 
 	public void setHeight(String height) {
@@ -41,7 +41,7 @@ public class Dimensions {
 	}
 
 	public String getDepth() {
-		return depth;
+		return depth.toLowerCase();
 	}
 
 	public void setDepth(String depth) {
@@ -49,7 +49,7 @@ public class Dimensions {
 	}
 
 	public String getWeight() {
-		return weight;
+		return weight.toLowerCase();
 	}
 
 	public void setWeight(String weight) {
