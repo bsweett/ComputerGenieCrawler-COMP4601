@@ -19,7 +19,7 @@ public class CGCrawlMain {
 				"http://www.ncix.com/category/gaming-desktop-99-1413.htm" };
 		
 		String productRoot = "http://www.ncix.com/detail";
-		Retailer ncix = new Retailer(RetailerName.NCIX, ncixSeeds, ncixFilters, productRoot);
+		Retailer ncix = new Retailer(RetailerName.ncix, ncixSeeds, ncixFilters, productRoot);
 		
 		if(crawlController.configure(ncix)) {
 			

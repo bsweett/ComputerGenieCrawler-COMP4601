@@ -74,7 +74,7 @@ public class CGWebCrawler extends WebCrawler {
 		ProductType type = null;
 		Product product = null;
 
-		if(url.contains(retailer.getProductRoot()) && retailer.getName() == RetailerName.NCIX) {
+		if(url.contains(retailer.getProductRoot()) && retailer.getName() == RetailerName.ncix) {
 			type = isValidNCIXProduct(doc);
 			
 			if(type != null) {
@@ -118,9 +118,9 @@ public class CGWebCrawler extends WebCrawler {
 		
 		if(span != null) {
 			if(span.text().equalsIgnoreCase("Desktop PC")) {
-				return ProductType.DESKTOP;
+				return ProductType.desktop;
 			} else if(span.text().equalsIgnoreCase("Notebooks")) {
-				return ProductType.LAPTOP;
+				return ProductType.laptop;
 			}
 		}
 

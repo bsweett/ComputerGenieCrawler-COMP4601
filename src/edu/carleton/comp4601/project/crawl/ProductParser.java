@@ -53,7 +53,7 @@ public class ProductParser {
 
 		Product product = null;
 
-		if(retailer.getName() == RetailerName.NCIX) {
+		if(retailer.getName() == RetailerName.ncix) {
 			product = parseNCIXProduct(type, url);
 		}
 
@@ -78,7 +78,7 @@ public class ProductParser {
 		product.setTitle(doc.title());
 		product.setImageSrc(img.attr("src"));
 		product.setType(type);
-		product.setRetailer(RetailerName.NCIX);
+		product.setRetailer(RetailerName.ncix);
 		product.setFetchDate(new Date().getTime());
 		product.setUrl(url);
 
