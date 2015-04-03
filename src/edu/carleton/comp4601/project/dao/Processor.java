@@ -8,7 +8,10 @@ public class Processor {
 	private String brand;
 	
 	public Processor() {
-		
+		this.processorType = "";
+		this.numberOfCores = "";
+		this.Speed = "";
+		this.brand = "";
 	}
 
 	public String getProcessorType() {

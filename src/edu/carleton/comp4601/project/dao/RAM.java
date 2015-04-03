@@ -6,7 +6,8 @@ public class RAM {
 	private String type;
 
 	public RAM() {
-		
+		this.memorySize = "";
+		this.type = "";
 	}
 	
 	public String getMemorySize() {

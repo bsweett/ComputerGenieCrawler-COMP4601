@@ -14,7 +14,7 @@ public class GraphicsCard {
 		this.manufacturer = "";
 		this.model = "";
 		this.memoryType = "";
-		this.setMemoryCap("");
+		this.memoryCap = "";
 	}
 
 	public String getManufacturer() {
