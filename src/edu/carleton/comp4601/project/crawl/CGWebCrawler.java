@@ -129,7 +129,15 @@ public class CGWebCrawler extends WebCrawler {
 	
 	@SuppressWarnings("unused")
 	private ProductType isValidTigerDirectProduct(Document doc) {
-
+		Element span = doc.select("ul.breadcrumb").first();
+		
+		if(span != null) {
+			if(span.html().equalsIgnoreCase("Desktop Computers")) {
+				return ProductType.desktop;
+			} else if(span.html().equalsIgnoreCase("Laptops & Notebooks")) {
+				return ProductType.laptop;
+			}
+		}
 		return null;
 	}
 

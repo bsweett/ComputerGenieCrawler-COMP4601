@@ -29,7 +29,7 @@ public class CGCrawlController implements CrawlTask {
 
 		try {
 			CrawlConfig configure = new CrawlConfig();
-			configure.setCrawlStorageFolder(rootCrawlStoragePath + "/crawler" + "/BESTBUY");
+			configure.setCrawlStorageFolder(rootCrawlStoragePath + "/crawler" + "/NCX");
 			configure.setMaxPagesToFetch(10000);
 			configure.setResumableCrawling(false);
 
