@@ -94,6 +94,10 @@ public class Product {
 	public ObjectId getId() {
 		return this.id;
 	}
+	
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
 
 	public String getTitle() {
 		return title.toLowerCase();

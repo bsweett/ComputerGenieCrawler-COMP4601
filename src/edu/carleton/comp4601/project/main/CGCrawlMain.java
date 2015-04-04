@@ -21,7 +21,20 @@ public class CGCrawlMain {
 		String productRoot = "http://www.ncix.com/detail";
 		Retailer ncix = new Retailer(RetailerName.ncix, ncixSeeds, ncixFilters, productRoot);
 		
-		if(crawlController.configure(ncix)) {
+		String[] tdSeeds = {"http://www.tigerdirect.ca/applications/category/guidedSearch.asp?CatId=17", "http://www.tigerdirect.ca/applications/category/guidedSearch.asp?CatId=6"};
+		String[] tdFilters = {"http://www.tigerdirect.ca/applications/searchtools/item-details.asp", "http://www.tigerdirect.ca/applications/category/guidedSearch.asp?CatId=17", 
+				"http://www.tigerdirect.ca/applications/category/guidedSearch.asp?CatId=6" };
+		
+		
+				/*"http://www.tigerdirect.ca/applications/category/category_tlc.asp?CatId=114", 
+				"http://www.tigerdirect.ca/applications/category/category_tlc.asp?CatId=3839", "http://www.tigerdirect.ca/applications/category/category_tlc.asp?CatId=2627", 
+				"http://www.tigerdirect.ca/applications/category/category_tlc.asp?CatId=4935", "http://www.tigerdirect.ca/applications/category/category_tlc.asp?CatId=927", 
+				""};*/
+		String tdPRoot = "http://www.tigerdirect.ca/applications/SearchTools/item-details.asp";
+		
+		Retailer tigerD = new Retailer(RetailerName.tigerdirect, tdSeeds, tdFilters, tdPRoot);
+		
+		if(crawlController.configure(tigerD)) {
 			
 			//For now lets just run the task ourselves until we know everything is working
 			

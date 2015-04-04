@@ -59,7 +59,7 @@ public class CGWebCrawler extends WebCrawler {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String html = htmlParseData.getHtml();
 
-			//logger.info("Visited url: " + url);
+			logger.info("Visited url: " + url);
 			
 			Document doc = Jsoup.parse(html);
 			if(doc != null) {
@@ -70,45 +70,25 @@ public class CGWebCrawler extends WebCrawler {
 
 	private void configureParserByDomain(Integer id, String url, Document doc) {
 
-		// need to check for category link on page in order to determine if we want to store the product
 		ProductType type = null;
 		Product product = null;
 
-		if(url.contains(retailer.getProductRoot()) && retailer.getName() == RetailerName.ncix) {
-			type = isValidNCIXProduct(doc);
+		if(url.contains(retailer.getProductRoot())) {
+			
+			RetailerName domainName = retailer.getName();
+			
+			if(domainName == RetailerName.ncix) {
+				type = isValidNCIXProduct(doc);
+			} else if (domainName == RetailerName.tigerdirect) {
+				type = isValidTigerDirectProduct(doc);
+				logger.info(type.toString());
+			}
 			
 			if(type != null) {
 				ProductParser productParser = new ProductParser(retailer, doc);
 				product = productParser.parseProductOfType(type, url);
 			}
-		}
-		
-		/*
-		if(url.contains(Retailer.BESTBUY.getfilterUrl())) {
-			type = isValidBestBuyProduct(doc); 
-
-			if(type != null) {
-				ProductParser productParser = new ProductParser(Retailer.BESTBUY, doc);
-				productParser.parseProductOfType(type);
-			}
-
-		} else if(url.contains(Retailer.TIGERDIRECT.getfilterUrl())) {
-			type = isValidTigerDirectProduct(doc);
-			
-			if(type != null) {
-				ProductParser productParser = new ProductParser(Retailer.TIGERDIRECT, doc);
-				productParser.parseProductOfType(type);
-			}
-
-		} else if(url.contains(Retailer.CANADACOMPUTERS.getfilterUrl())) {
-			type = isValidCCProduct(doc);
-			
-			if(type != null) {
-				ProductParser productParser = new ProductParser(Retailer.CANADACOMPUTERS, doc);
-				productParser.parseProductOfType(type);
-			}
-
-		}*/
+		} 
 		
 		addProductToDatabase(product);
 	}
@@ -127,7 +107,6 @@ public class CGWebCrawler extends WebCrawler {
 		return null;
 	}
 	
-	@SuppressWarnings("unused")
 	private ProductType isValidTigerDirectProduct(Document doc) {
 		Element span = doc.select("ul.breadcrumb").first();
 		

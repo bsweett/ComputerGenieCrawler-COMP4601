@@ -2,6 +2,7 @@ package edu.carleton.comp4601.project.database;
 
 import java.net.UnknownHostException;
 
+import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
 import com.mongodb.BasicDBObject;
@@ -32,16 +33,19 @@ public class DatabaseManager {
 	private MongoClient mongoClient;
 	private Morphia morphia;
 	private static DatabaseManager instance;
+	private Datastore ds;
 
 	public DatabaseManager() {
 
 		try {
 			this.morphia = new Morphia();
 			this.morphia.map(Product.class);
-			
 			this.mongoClient = new MongoClient( "localhost" );
 			setDatabase(this.mongoClient.getDB( "computergenie" ));
 			
+			this.ds = this.morphia.createDatastore(this.mongoClient, "computergenie");
+			ds.ensureIndexes();
+			ds.ensureCaps();			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -67,7 +71,7 @@ public class DatabaseManager {
 
 		try {
 			DBCollection col = getProductCollection();
-			col.insert(this.morphia.toDBObject(product));
+			col.save(this.morphia.toDBObject(product));
 			
 		} catch (MongoException e) {
 			System.out.println("MongoException: " + e.getLocalizedMessage());
@@ -93,13 +97,16 @@ public class DatabaseManager {
 	
 	public Product findAndUpdateProductByTitle(Product product) {
 		try {
-			BasicDBObject query = new BasicDBObject("title", product.getTitle());
+			//BasicDBObject query = new BasicDBObject("title", product.getTitle());
 			DBCollection col = getProductCollection();
-			DBObject newProduct = this.morphia.toDBObject(product);
-			DBObject result = col.findAndModify(query, newProduct);
+			//DBObject result = col.findOne(query);
+			
+			Product result = ds.find(Product.class).field("title").equal(product.getTitle()).get();
 			
 			if(result != null) {
-				return morphia.fromDBObject(Product.class, result);
+				product.setId(result.getId());
+				col.save(this.morphia.toDBObject(product));
+				
 			} else {
 				this.addNewProduct(product);
 			}
