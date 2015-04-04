@@ -87,7 +87,7 @@ public class ProductParser {
 		String price = "";
 		if(price1 != null && price1.hasText()) {
 			price = price1.text();
-			product.setPrice(price.replace("$", "".replace(",", "")));
+			product.setPrice(price.replace("$", "").replace(",", ""));
 		} else if(price2 != null && price2.hasText()) {
 			price = price2.text();
 			product.setPrice(price.replace("$", "".replace(",", "")));
