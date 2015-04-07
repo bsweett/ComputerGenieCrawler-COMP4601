@@ -1,9 +1,12 @@
 package edu.carleton.comp4601.project.database;
 
 import java.net.UnknownHostException;
+import java.util.regex.Pattern;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
@@ -17,6 +20,8 @@ import edu.carleton.comp4601.project.dao.Product;
 
 public class DatabaseManager {
 
+	private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
+	
 	public DB getDatabase() {
 		return db;
 	}
@@ -45,9 +50,11 @@ public class DatabaseManager {
 			
 			this.ds = this.morphia.createDatastore(this.mongoClient, "computergenie");
 			ds.ensureIndexes();
-			ds.ensureCaps();			
+			ds.ensureCaps();		
+			
+			logger.info("Initialized Database Manaerger");
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.warn("UnknownHostException: " + e.getLocalizedMessage());
 		}
 
 	}
@@ -74,7 +81,7 @@ public class DatabaseManager {
 			col.save(this.morphia.toDBObject(product));
 			
 		} catch (MongoException e) {
-			System.out.println("MongoException: " + e.getLocalizedMessage());
+			logger.warn("MongoException: " + e.getLocalizedMessage());
 			return false;
 		}
 
@@ -88,7 +95,7 @@ public class DatabaseManager {
 			col.update(this.morphia.toDBObject(oldProduct), this.morphia.toDBObject(newProduct));
 
 		} catch (MongoException e) {
-			System.out.println("MongoException: " + e.getLocalizedMessage());
+			logger.warn("MongoException: " + e.getLocalizedMessage());
 			return false;
 		}
 
@@ -96,24 +103,24 @@ public class DatabaseManager {
 	}
 	
 	public Product findAndUpdateProductByTitle(Product product) {
+		
 		try {
-			//BasicDBObject query = new BasicDBObject("title", product.getTitle());
-			DBCollection col = getProductCollection();
-			//DBObject result = col.findOne(query);
-			
-			Product result = ds.find(Product.class).field("title").equal(product.getTitle()).get();
-			
-			if(result != null) {
+			DBCollection col = getProductCollection();	
+			DBObject ref = new BasicDBObject();
+			ref.put("title", Pattern.compile(".*" + product.getTitle() +".*" , Pattern.CASE_INSENSITIVE));
+			DBObject search = col.findOne(ref);
+
+			if(search != null) {
+				Product result = this.morphia.fromDBObject(Product.class, search);
 				product.setId(result.getId());
 				col.save(this.morphia.toDBObject(product));
-				
 			} else {
 				this.addNewProduct(product);
 			}
 			return product;
 			
 		} catch (MongoException e) {
-			System.out.println("MongoException: " + e.getLocalizedMessage());
+			logger.warn("MongoException: " + e.getLocalizedMessage());
 			return null;
 		}
 	}
@@ -127,7 +134,7 @@ public class DatabaseManager {
 			return morphia.fromDBObject(Product.class, result);
 			
 		} catch (MongoException e) {
-			System.out.println("MongoException: " + e.getLocalizedMessage());
+			logger.warn("MongoException: " + e.getLocalizedMessage());
 			return null;
 		}
 	}
@@ -149,6 +156,7 @@ public class DatabaseManager {
 
 		if(this.mongoClient != null) {
 			this.mongoClient.close();
+			logger.info("Connection to mongoDB has been closed");
 		}
 
 	}

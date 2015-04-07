@@ -14,6 +14,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class CGCrawlController implements CrawlTask {
 	private static final Logger logger = LoggerFactory.getLogger(CGCrawlController.class);
 	private String rootCrawlStoragePath;
+	private CrawlController controller;
 
 	public CGCrawlController(String rootCrawlStoragePath) {
 		this.rootCrawlStoragePath = rootCrawlStoragePath;
@@ -29,7 +30,7 @@ public class CGCrawlController implements CrawlTask {
 
 		try {
 			CrawlConfig configure = new CrawlConfig();
-			configure.setCrawlStorageFolder(rootCrawlStoragePath + "/crawler" + "/TD");
+			configure.setCrawlStorageFolder(rootCrawlStoragePath + "/crawler/" + retailer.getName().toString() + "/");
 			configure.setMaxPagesToFetch(10000);
 			configure.setResumableCrawling(false);
 
@@ -38,36 +39,29 @@ public class CGCrawlController implements CrawlTask {
 			RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
 			RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 
-			CrawlController controller = new CrawlController(configure, pageFetcher, robotstxtServer);
+			controller = new CrawlController(configure, pageFetcher, robotstxtServer);
 			controller.setCustomData(retailer);
 			
 			for(String s : retailer.getSeeds()) {
 				controller.addSeed(s);
 			}
-			controller.start(CGWebCrawler.class, 1);
-
+			
 		} catch (Exception e) {
-			logger.warn("Exception thrown configuring crawlers: " + e.getLocalizedMessage());
+			logger.warn("Exception thrown configuring crawler: " + e.getLocalizedMessage());
 			return false;
 		}
-
 
 		return true;
 	}
 
 	/**
-	 * Tells all of the controllers to block until complete
+	 * Tells the controller to start crawling. 
+	 * 
+	 * @return true when complete
 	 */
 	@Override
-	public void waitUntilFinished() {
-
-	}
-
-	/**
-	 * Tells all of the controllers to start crawling
-	 */
-	@Override
-	public void execute() {
-
+	public boolean execute() {
+		controller.start(CGWebCrawler.class, 3);
+		return true;
 	}
 }

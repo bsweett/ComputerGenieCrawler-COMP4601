@@ -20,6 +20,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class CGWebCrawler extends WebCrawler {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(CGWebCrawler.class);
 
 	private static final Pattern FILTERS = Pattern.compile(
@@ -36,7 +37,7 @@ public class CGWebCrawler extends WebCrawler {
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
-		
+
 		if (FILTERS.matcher(href).matches()) {
 			return false;
 		}
@@ -59,8 +60,8 @@ public class CGWebCrawler extends WebCrawler {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String html = htmlParseData.getHtml();
 
-			logger.info("Visited url: " + url);
-			
+			//logger.info("Visited url: " + url);
+
 			Document doc = Jsoup.parse(html);
 			if(doc != null) {
 				configureParserByDomain(docid, url, doc);
@@ -74,28 +75,29 @@ public class CGWebCrawler extends WebCrawler {
 		Product product = null;
 
 		if(url.contains(retailer.getProductRoot())) {
-			
+
 			RetailerName domainName = retailer.getName();
-			
+
 			if(domainName == RetailerName.ncix) {
 				type = isValidNCIXProduct(doc);
 			} else if (domainName == RetailerName.tigerdirect) {
 				type = isValidTigerDirectProduct(doc);
-				logger.info(type.toString());
+			} else if(domainName == RetailerName.bestbuy) {
+				type = isValidBestBuyProduct(doc);
 			}
-			
+
 			if(type != null) {
 				ProductParser productParser = new ProductParser(retailer, doc);
 				product = productParser.parseProductOfType(type, url);
 			}
 		} 
-		
+
 		addProductToDatabase(product);
 	}
 
 	private ProductType isValidNCIXProduct(Document doc) {
 		Element span = doc.select("ul.bread-crumbs").first().select("li.crumb2").select("div").select("a").select("span").first();
-		
+
 		if(span != null) {
 			if(span.text().equalsIgnoreCase("Desktop PC")) {
 				return ProductType.desktop;
@@ -106,10 +108,10 @@ public class CGWebCrawler extends WebCrawler {
 
 		return null;
 	}
-	
+
 	private ProductType isValidTigerDirectProduct(Document doc) {
 		Element span = doc.select("ul.breadcrumb").first();
-		
+
 		if(span != null) {
 			if(span.html().equalsIgnoreCase("Desktop Computers")) {
 				return ProductType.desktop;
@@ -120,12 +122,27 @@ public class CGWebCrawler extends WebCrawler {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
-	private ProductType isValidCCProduct(Document doc) {
-
+	private ProductType isValidBestBuyProduct(Document doc) {
+		Element span = doc.select("span[id=ctl00_CP_ctl00_Breadcrumb_SiteMapPath]").first();
+		Element iMac = span.select("a[title=Apple iMac]").first();
+		Element mini = span.select("a[title=Apple Mac Mini]").first();
+		Element pro = span.select("a[title=Apple Mac Pro]").first();
+		Element air = span.select("a[title=Apple MacBook Air]").first();
+		Element bookPro = span.select("a[title=Apple MacBook Pro]").first();
+		
+		if(iMac != null || mini != null || pro != null) {
+			return ProductType.desktop;
+		}
+		
+		if(air != null || bookPro != null) {
+			return ProductType.laptop;
+		}
+		
+		//TODO: Check other desktop and lap top types
+		
 		return null;
 	}
-	
+
 	private void addProductToDatabase(Product product) {
 		if(product != null) {
 			DatabaseManager.getInstance().findAndUpdateProductByTitle(product);
