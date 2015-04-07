@@ -72,12 +72,12 @@ public class ProductParser {
 		Element specsSpan = doc.select("ul.std-tablist").first();
 
 		product.setTitle(doc.title());
-		product.setImageSrc(img.attr("src"));
+		product.setImageSrc("http://www.bestbuy.ca/" + img.attr("src"));
 		product.setType(type);
 		product.setRetailer(RetailerName.bestbuy);
 		product.setFetchDate(new Date().getTime());
 		product.setUrl(url);
-		product.setPrice(priceSpan.text());
+		product.setPrice(priceSpan.text().replace("$", "").replace(",", ""));
 		product.setModel(modelSpan.text());
 
 		logger.info(product.toString());
