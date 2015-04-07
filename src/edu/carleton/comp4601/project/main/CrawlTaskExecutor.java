@@ -1,9 +1,9 @@
 package edu.carleton.comp4601.project.main;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+//import java.time.Duration;
+//import java.time.LocalDateTime;
+//import java.time.ZoneId;
+//import java.time.ZonedDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +30,7 @@ public class CrawlTaskExecutor {
      * @param targetMin
      * @param targetSec
      */
+    /*
     public void startExecutionAt(int targetHour, int targetMin, int targetSec) {
         Runnable taskWrapper = new Runnable(){
 
@@ -53,6 +54,7 @@ public class CrawlTaskExecutor {
      * @param targetSec
      * @return
      */
+    /*
     private long computNextDelay(int targetHour, int targetMin, int targetSec) {
         LocalDateTime localNow = LocalDateTime.now();
         ZoneId currentZone = ZoneId.systemDefault();
@@ -68,7 +70,7 @@ public class CrawlTaskExecutor {
         
         return duration.getSeconds();
     }
-
+*/
     /**
      *  Tries to stop the service 
      */
