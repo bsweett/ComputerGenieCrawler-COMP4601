@@ -77,7 +77,7 @@ public class ProductParser {
 		product.setRetailer(RetailerName.bestbuy);
 		product.setFetchDate(new Date().getTime());
 		product.setUrl(url);
-		product.setPrice(priceSpan.text().replace("$", "").replace(",", ""));
+		product.setPrice((priceSpan.text().replace("$", "").replace(",", "")));
 		product.setModel(modelSpan.text());
 
 		logger.info(product.toString());
