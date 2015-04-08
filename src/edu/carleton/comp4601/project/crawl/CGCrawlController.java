@@ -31,7 +31,8 @@ public class CGCrawlController implements CrawlTask {
 		try {
 			CrawlConfig configure = new CrawlConfig();
 			configure.setCrawlStorageFolder(rootCrawlStoragePath + "/crawler/" + retailer.getName().toString() + "/");
-			configure.setMaxPagesToFetch(10000);
+			configure.setMaxPagesToFetch(5000);
+			configure.setPolitenessDelay(500);
 			configure.setResumableCrawling(false);
 
 			PageFetcher pageFetcher = new PageFetcher(configure);
