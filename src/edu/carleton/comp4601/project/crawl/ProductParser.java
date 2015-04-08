@@ -77,7 +77,7 @@ public class ProductParser {
 		product.setRetailer(RetailerName.bestbuy);
 		product.setFetchDate(new Date().getTime());
 		product.setUrl(url);
-		product.setPrice((priceSpan.text().replace("$", "").replace(",", "")));
+		product.setPrice((priceSpan.text()));
 		product.setModel(modelSpan.text());
 
 		logger.info(product.toString());
@@ -283,10 +283,10 @@ public class ProductParser {
 		String price = "";
 		if(price1 != null && price1.hasText()) {
 			price = price1.text();
-			product.setPrice(price.replace("$", "").replace(",", ""));
+			product.setPrice(price);
 		} else if(price2 != null && price2.hasText()) {
 			price = price2.text();
-			product.setPrice(price.replace("$", "".replace(",", "")));
+			product.setPrice(price);
 		} else {
 			logger.warn("Could not fetch price for a product: " + url);
 		}
